@@ -1,11 +1,10 @@
 function processPath(path){
-    const ini = '../public/uploads'
     let cadena = path.split('-');
-    path = ini;
+    let dir='';
     cadena.forEach(element => {
-        path = path + '/' + element;
+        dir = dir + '/' + element;
     });
-    return path;
+    return dir;
 }
 
 module.exports = processPath;
