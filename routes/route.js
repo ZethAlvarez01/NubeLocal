@@ -2,7 +2,7 @@ const { Router, json } = require('express');
 const router = Router();
 const fs = require('fs');
 const path = require('path');
-const fileupload = require('express-fileupload')
+const File = require('../model/schema');
 const processPath = require('../src/lib/process');
 const { log } = require('console');
 
@@ -14,7 +14,7 @@ router.get('/adios', (req,res) =>{
     res.send("adios");
 });
 
-router.post('/:path?', (req,res) =>{
+router.post('/:path?', async (req,res) =>{
     if(!req.files || Object.keys(req.files).length === 0){
         return res.status(400).json({
             messaje: 'No file uploaded',
@@ -36,18 +36,25 @@ router.post('/:path?', (req,res) =>{
         }
         
         for(let i=0;i<f.length;i++){
-            console.log(dirPath)
-            fs.promises.access(path.join(dirPath,f[i].name))
-                .then(() => reject(new Error('File ${f[i].name} already exists')))
-                .catch(() =>
-                    f[i].mv(path.join(dirPath,f[i].name),(err)=>{
-                        if (err) {
-                            console.log("Error al mover "+err);
-                        } else {
-                            console.log("Subido");
-                        }
-                    })          
-                );
+            console.log(dirPath);
+            console.log(f[i]);
+            let file = new File();
+            file.name = f[i].name;
+            file.path = dirPath;
+            file.mimetype = f[i].size;
+            file.md5 = f[i].md5;
+            file.created_at = new Date(Date.now());
+
+            await file.save();
+
+            // Mover el archivo a la carpeta 
+            f[i].mv(path.join(dirPath,f[i].name),(err)=>{
+                if (err) {
+                    console.log("Error al mover "+err);
+                } else {
+                    console.log("Subido");
+                }
+            });
         }
 
         return res.json({ 

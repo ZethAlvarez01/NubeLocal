@@ -3,6 +3,7 @@ const path = require('path');
 const fileUpload = require('express-fileupload');
 
 const app = express();
+require('./database');
 
 app.set('port', process.env.PORT || 3000);
 app.set('dir', __dirname);
