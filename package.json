@@ -10,14 +10,17 @@
   "author": "Zeth Alvarez Hernandez",
   "license": "ISC",
   "dependencies": {
+    "directory-tree": "^2.2.4",
     "express": "^4.17.1",
     "express-fileupload": "^1.2.0",
     "fs": "0.0.1-security",
     "fs-extra": "^9.0.1",
+    "fs-file-tree": "^1.1.1",
     "mongoose": "^5.10.7",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "path": "^0.12.7",
+    "rimraf": "^3.0.2",
     "timeago.js": "^4.0.2",
     "uuid": "^8.3.0"
   },

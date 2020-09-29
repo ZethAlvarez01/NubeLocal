@@ -1,17 +1,55 @@
 const { Router, json } = require('express');
 const router = Router();
 const fs = require('fs');
+const { unlink } = require('fs-extra');
 const path = require('path');
 const File = require('../model/schema');
 const processPath = require('../src/lib/process');
-const { log } = require('console');
+var rimraf = require("rimraf");
+const dirTree = require("directory-tree");
 
 router.get('/', (req,res) =>{
-    res.send("Holaaaa");
+    let dirPath = path.join(__dirname,'../public/uploads');
+    const tree = dirTree(dirPath);
+    console.log(tree);
+    res.json(tree);
 });
 
 router.get('/adios', (req,res) =>{
     res.send("adios");
+});
+
+
+router.delete('/file/:id/:path?',async (req,res)=>{
+        let dirPath = path.join(__dirname,'../public/uploads');
+        let createPath = dirPath;
+        let carpetas = [];
+
+        if(req.params.path !== undefined){
+            let dir = processPath(req.params.path);
+            dirPath = path.join(dirPath,dir[0]);
+            carpetas = dir[1];
+        }
+        if (fs.existsSync(dirPath)) {
+            
+            const { id } = req.params;
+            const file = await File.findByIdAndDelete(id);
+            console.log(file);
+            await unlink(path.join(dirPath,file.name));
+            return res.json({
+                message: 'Archivo borrado',
+                name: file.name,
+                success: false,
+                path: dirPath
+            });
+
+        }else{
+            return res.status(400).json({
+                message: 'Doesnt exist',
+                success: false,
+                path: dirPath
+            });
+        }
 });
 
 router.post('/:path?', async (req,res) =>{
@@ -29,10 +67,28 @@ router.post('/:path?', async (req,res) =>{
         }
     
         let dirPath = path.join(__dirname,'../public/uploads');
+        let createPath = dirPath;
+        let carpetas = [];
 
         if(req.params.path !== undefined){
             let dir = processPath(req.params.path);
-            dirPath = path.join(dirPath,dir);
+            dirPath = path.join(dirPath,dir[0]);
+            carpetas = dir[1];
+        }
+
+        console.log(carpetas);
+
+        if (fs.existsSync(dirPath)) {
+            console.log("Existe");
+        }else{
+            console.log("No existe");
+
+            for(let i=0;i<carpetas.length;i++){
+                createPath = path.join(createPath,carpetas[i]);
+                if (!fs.existsSync(createPath)) {
+                    fs.mkdirSync(createPath);
+                }
+            }
         }
         
         for(let i=0;i<f.length;i++){
