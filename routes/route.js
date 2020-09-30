@@ -18,38 +18,66 @@ router.get('/', (req,res) =>{
 router.get('/adios', (req,res) =>{
     res.send("adios");
 });
+//borra carpetas
+router.delete('/dir/:path?',(req,res)=>{
 
+    let dirPath = path.join(__dirname,'../public/uploads');
+    let createPath = dirPath;
+    let carpetas = [];
 
-router.delete('/file/:id/:path?',async (req,res)=>{
-        let dirPath = path.join(__dirname,'../public/uploads');
-        let createPath = dirPath;
-        let carpetas = [];
+    if(req.params.path !== undefined){
+        let dir = processPath(req.params.path);
+        dirPath = path.join(dirPath,dir[0]);
+        carpetas = dir[1];
+    }
 
-        if(req.params.path !== undefined){
-            let dir = processPath(req.params.path);
-            dirPath = path.join(dirPath,dir[0]);
-            carpetas = dir[1];
-        }
-        if (fs.existsSync(dirPath)) {
-            
-            const { id } = req.params;
-            const file = await File.findByIdAndDelete(id);
-            console.log(file);
-            await unlink(path.join(dirPath,file.name));
-            return res.json({
-                message: 'Archivo borrado',
-                name: file.name,
-                success: false,
-                path: dirPath
-            });
-
+    const tree = dirTree(dirPath);
+    
+    //Meter a una funcion recursiva!!!
+    for(let i=0;i<tree.children.length;i++){
+        console.log(tree.children[i]);
+        if(tree.children[i] === 'file'){
+            //Bucar archivo y eliminar
         }else{
-            return res.status(400).json({
-                message: 'Doesnt exist',
-                success: false,
-                path: dirPath
-            });
+            //
         }
+    }
+
+    return res.json({
+        tree: tree
+    });
+});
+
+//Borra archivos
+router.delete('/file/:id/:path?',async (req,res)=>{
+    let dirPath = path.join(__dirname,'../public/uploads');
+    let createPath = dirPath;
+    let carpetas = [];
+
+    if(req.params.path !== undefined){
+        let dir = processPath(req.params.path);
+        dirPath = path.join(dirPath,dir[0]);
+        carpetas = dir[1];
+    }
+    if (fs.existsSync(dirPath)) {
+        const { id } = req.params;
+        const file = await File.findByIdAndDelete(id);
+        console.log(file);
+        await unlink(path.join(dirPath,file.name));
+        return res.json({
+            message: 'Archivo borrado',
+            name: file.name,
+            success: false,
+            path: dirPath
+        });
+
+    }else{
+        return res.status(400).json({
+            message: 'Doesnt exist',
+            success: false,
+            path: dirPath
+        });
+    }
 });
 
 router.post('/:path?', async (req,res) =>{
