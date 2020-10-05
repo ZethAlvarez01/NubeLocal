@@ -1,6 +1,7 @@
 const { Router, json } = require('express');
 const router = Router();
 const fs = require('fs');
+const fsp = require('fs').promises;
 const { unlink } = require('fs-extra');
 const path = require('path');
 const File = require('../model/schema');
@@ -19,10 +20,9 @@ router.get('/adios', (req,res) =>{
     res.send("adios");
 });
 //borra carpetas
-router.delete('/dir/:path?',(req,res)=>{
+router.delete('/dir/:path', async (req,res)=>{
 
     let dirPath = path.join(__dirname,'../public/uploads');
-    let createPath = dirPath;
     let carpetas = [];
 
     if(req.params.path !== undefined){
@@ -33,19 +33,26 @@ router.delete('/dir/:path?',(req,res)=>{
 
     const tree = dirTree(dirPath);
     
-    //Meter a una funcion recursiva!!!
-    for(let i=0;i<tree.children.length;i++){
-        console.log(tree.children[i]);
-        if(tree.children[i] === 'file'){
-            //Bucar archivo y eliminar
-        }else{
-            //
-        }
+    console.log(tree);
+    console.log(dirPath);
+    console.log(carpetas);
+    if (fs.existsSync(dirPath)) {
+
+        const file = await File.remove({"path":{$regex: carpetas[0]}});
+    
+        rimraf(dirPath, function () { 
+            console.log('done'); 
+        }); 
+
+
+    }else{
+        return res.status(400).json({
+            message: 'Doesnt exist',
+            success: false,
+            path: dirPath
+        });
     }
 
-    return res.json({
-        tree: tree
-    });
 });
 
 //Borra archivos
@@ -78,6 +85,39 @@ router.delete('/file/:id/:path?',async (req,res)=>{
             path: dirPath
         });
     }
+});
+
+router.post('/dir/:path',(req,res)=>{
+    let dirPath = path.join(__dirname,'../public/uploads');
+    let createPath = dirPath;
+    let carpetas = [];
+
+    if(req.params.path !== undefined){
+        let dir = processPath(req.params.path);
+        dirPath = path.join(dirPath,dir[0]);
+        carpetas = dir[1];
+    }
+
+    console.log(carpetas);
+
+        if (fs.existsSync(dirPath)) {
+            console.log("Existe");
+        }else{
+            console.log("No existe");
+
+            for(let i=0;i<carpetas.length;i++){
+                createPath = path.join(createPath,carpetas[i]);
+                if (!fs.existsSync(createPath)) {
+                    fs.mkdirSync(createPath);
+                }
+            }
+        }
+
+    return res.json({
+        message: 'Carpetas creadas'
+    });
+
+
 });
 
 router.post('/:path?', async (req,res) =>{
