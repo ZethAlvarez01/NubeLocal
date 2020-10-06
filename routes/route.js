@@ -5,9 +5,11 @@ const fsp = require('fs').promises;
 const { unlink } = require('fs-extra');
 const path = require('path');
 const File = require('../model/schema');
-const processPath = require('../src/lib/process');
+const splitPath = require('../src/lib/splitPath');
+const addSlash = require('../src/lib/addSlash');
 var rimraf = require("rimraf");
 const dirTree = require("directory-tree");
+const { log } = require('console');
 
 router.get('/', (req,res) =>{
     let dirPath = path.join(__dirname,'../public/uploads');
@@ -26,7 +28,7 @@ router.delete('/dir/:path', async (req,res)=>{
     let carpetas = [];
 
     if(req.params.path !== undefined){
-        let dir = processPath(req.params.path);
+        let dir = splitPath(req.params.path);
         dirPath = path.join(dirPath,dir[0]);
         carpetas = dir[1];
     }
@@ -34,18 +36,29 @@ router.delete('/dir/:path', async (req,res)=>{
     const tree = dirTree(dirPath);
     
     console.log(tree);
-    console.log(dirPath);
+    console.log(fs.existsSync(dirPath));
     console.log(carpetas);
-    if (fs.existsSync(dirPath)) {
 
-        const file = await File.remove({"path":{$regex: carpetas[0]}});
+    let dirPath2 = addSlash(dirPath);
+
+    if (fs.existsSync(dirPath)) {
+        console.log(dirPath2);
+        const file = await File.remove({ "path": {$regex: "^"+dirPath2}});
+        console.log(file);
     
         rimraf(dirPath, function () { 
             console.log('done'); 
         }); 
 
+        return res.json({
+            message: 'Carpeta borrada',
+            success: true,
+            path: dirPath
+        });
 
     }else{
+        
+        console.log("No existe "+dirPath)
         return res.status(400).json({
             message: 'Doesnt exist',
             success: false,
@@ -62,7 +75,7 @@ router.delete('/file/:id/:path?',async (req,res)=>{
     let carpetas = [];
 
     if(req.params.path !== undefined){
-        let dir = processPath(req.params.path);
+        let dir = splitPath(req.params.path);
         dirPath = path.join(dirPath,dir[0]);
         carpetas = dir[1];
     }
@@ -93,7 +106,7 @@ router.post('/dir/:path',(req,res)=>{
     let carpetas = [];
 
     if(req.params.path !== undefined){
-        let dir = processPath(req.params.path);
+        let dir = splitPath(req.params.path);
         dirPath = path.join(dirPath,dir[0]);
         carpetas = dir[1];
     }
@@ -111,6 +124,7 @@ router.post('/dir/:path',(req,res)=>{
                     fs.mkdirSync(createPath);
                 }
             }
+            console.log("Creada "+dirPath);
         }
 
     return res.json({
@@ -139,7 +153,7 @@ router.post('/:path?', async (req,res) =>{
         let carpetas = [];
 
         if(req.params.path !== undefined){
-            let dir = processPath(req.params.path);
+            let dir = splitPath(req.params.path);
             dirPath = path.join(dirPath,dir[0]);
             carpetas = dir[1];
         }

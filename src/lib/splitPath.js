@@ -1,4 +1,4 @@
-function processPath(path){
+function splitPath(path){
     let arreglo = [];
     let cadena = path.split('-');
     let dir='';
@@ -10,4 +10,4 @@ function processPath(path){
     return arreglo;
 }
 
-module.exports = processPath;
+module.exports = splitPath;
