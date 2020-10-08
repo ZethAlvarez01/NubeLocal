@@ -11,6 +11,19 @@ var rimraf = require("rimraf");
 const dirTree = require("directory-tree");
 const { log } = require('console');
 
+
+router.get('/all', async (req,res)=>{
+
+    const file = await File.find().sort({_id: -1});
+    console.log(file);
+
+    return res.json({
+        message: "All Files",
+        file: file,
+        status: true
+    });
+});
+
 //Get de rutas y archivos
 router.get('/:path?',(req,res) =>{
     let dirPath = path.join(__dirname,'../public/uploads');
