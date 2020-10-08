@@ -48,6 +48,19 @@ router.get('/:path?',(req,res) =>{
     
 });
 
+router.get('/file/:id', async (req,res)=>{
+    const idFile = req.params.id;
+
+    const file = await File.find({_id: idFile});
+    console.log(file);
+
+    return res.json({
+        message: idFile,
+        file: file,
+        status: true
+    });
+});
+
 router.get('/adios', (req,res) =>{
     res.send("adios");
 });
@@ -180,7 +193,7 @@ router.post('/dir/:path',(req,res)=>{
 router.post('/:path?', async (req,res) =>{
     if(!req.files || Object.keys(req.files).length === 0){
         return res.status(400).json({
-            messaje: 'No file uploaded',
+            message: 'No file uploaded',
             success: false
         })
     }else{
