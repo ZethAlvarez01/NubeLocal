@@ -41,7 +41,21 @@ router.get('/:path?',(req,res) =>{
     
         let element = [];
         for(let i=0;i<tree.children.length;i++){
-            element.push(tree.children[i].type);
+            if(tree.children[i].type == 'file'){
+                let data = {
+                    type: tree.children[i].type,
+                    name: tree.children[i].name,
+                    path: tree.children[i].path
+                };
+                element.push(data);
+            }else{
+                let data = {
+                    type: tree.children[i].type,
+                    name: tree.children[i].name,
+                    path: tree.children[i].path
+                };
+                element.push(data);
+            }
         }
     
         res.json({
@@ -52,10 +66,11 @@ router.get('/:path?',(req,res) =>{
         });
 
     }else{
-        res.status(400).json({
+        res.json({
             message: 'Doesnt exist',
             success: false,
-            path: dirPath
+            path: dirPath,
+            elements: []
         });
     }
     
