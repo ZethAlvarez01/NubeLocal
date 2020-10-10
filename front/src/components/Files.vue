@@ -6,7 +6,7 @@
         </h1>
         <div class="archivos">
             <div v-for="(item, i) in elementos" :key="i">
-                <div v-if="item.type"> {{item.name}} </div>
+                <div v-if="item.type"> {{item.name}} {{ item.id }}</div>
                 <div v-else @click="checkFordward(item.path)">{{item.name}} </div>
             </div>
         </div>
@@ -25,6 +25,7 @@ export default {
         rutas: [{name: "Home",i:0}]
     }),
     mounted() {
+        this.elementos = [];
         this.getTodos();
     },
     methods: {
@@ -42,10 +43,10 @@ export default {
                     let elemento = {
                         name: arreglo[i].name,
                         type: aux,
-                        path: arreglo[i].path
+                        path: arreglo[i].path,
+                        id: arreglo[i].id
                     };
                     this.elementos.push(elemento);
-                    console.log(elemento);
                 }
                 
             })
@@ -74,6 +75,7 @@ export default {
                 }else{
                     this.path = cad;
                     console.log(path);
+                    this.elementos = [];
                     this.getTodos();
                 }
             }
@@ -92,6 +94,7 @@ export default {
                 }
                 this.rutas = aux;
                 this.path = cad;
+                this.elementos = [];
                 this.getTodos();
             }
         }

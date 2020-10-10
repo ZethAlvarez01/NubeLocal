@@ -25,7 +25,7 @@ router.get('/all', async (req,res)=>{
 });
 
 //Get de rutas y archivos
-router.get('/:path?',(req,res) =>{
+router.get('/:path?', async (req,res) =>{
     let dirPath = path.join(__dirname,'../public/uploads');
     let carpetas = [];
 
@@ -40,19 +40,36 @@ router.get('/:path?',(req,res) =>{
         console.log(tree);
     
         let element = [];
+
         for(let i=0;i<tree.children.length;i++){
             if(tree.children[i].type == 'file'){
+                let auxName = tree.children[i].name;
+                let pathAux = tree.path;
+                if(pathAux.split("\\").length > 7){
+                    let aux = pathAux.split("\\");
+                    let aux2 = ""; 
+                    for(let j=0;j<aux.length-2;j++){
+                        aux2 = aux2 + aux[j] + "\\";
+                    }
+                    aux2 = aux2 + aux[aux.length-2];
+                    pathAux = aux2;
+                }
+                console.log(pathAux);
+                const file = await File.find({"path": pathAux,"name":auxName});
+                console.log(file[0].id);
                 let data = {
                     type: tree.children[i].type,
                     name: tree.children[i].name,
-                    path: tree.children[i].path
+                    path: tree.children[i].path,
+                    id: file[0].id
                 };
                 element.push(data);
             }else{
                 let data = {
                     type: tree.children[i].type,
                     name: tree.children[i].name,
-                    path: tree.children[i].path
+                    path: tree.children[i].path,
+                    id: "null"
                 };
                 element.push(data);
             }
