@@ -1,9 +1,17 @@
 <template>
     <div class="Files">
         <h1>Archivos</h1>
-        <h1 v-for="(item, i) in rutas" :key="i" @click="checkBack(item.i)">
-            {{ item.name }}
-        </h1>
+
+        <h1 class="label">Nuevo archivo</h1>
+        <input type="file" @change="submitFiles" multiple>
+
+        <h1 class="label">Nueva carpeta</h1>
+        <input type="text" v-model="nuevaCarpeta">
+        <button v-on:click="crearCarpeta">Crear</button>
+
+        <div v-for="(item, i) in rutas" :key="i" @click="checkBack(item.i)">
+            <h2>{{ item.name }}</h2>
+        </div>
         <div class="archivos">
             <div v-for="(item, i) in elementos" :key="i">
                 <div v-if="item.type"> {{item.name}} {{ item.id }}</div>
@@ -16,13 +24,14 @@
 <script>
 import axios from 'axios'
 
-
 export default {
     name: "Files",
     data:()=>({
         elementos: [],
         path: "",
-        rutas: [{name: "Home",i:0}]
+        rutas: [{name: "Home",i:0}],
+        files: [],
+        nuevaCarpeta: null
     }),
     mounted() {
         this.elementos = [];
@@ -35,7 +44,7 @@ export default {
             .then(response => {
                 let arreglo = response.data.elements;
                 for(let i=0;i<arreglo.length;i++){
-                    console.log(arreglo[i]);
+                    //console.log(arreglo[i]);
                     let aux = true;
                     if(arreglo[i].type !== 'file'){
                         aux = false;
@@ -74,7 +83,7 @@ export default {
                     cad = arreglo[i]+"-"+cad;
                 }else{
                     this.path = cad;
-                    console.log(path);
+                    //console.log(path);
                     this.elementos = [];
                     this.getTodos();
                 }
@@ -97,6 +106,89 @@ export default {
                 this.elementos = [];
                 this.getTodos();
             }
+        },
+        async submitFiles(event) {
+            
+            if( event.target.files.length == 0 ){
+                console.log("no files selected");
+                return 0;
+            }
+
+            let path = undefined;
+    
+            if(this.rutas.length != 1){
+                path = "";
+                for(let i=0;i<this.rutas.length-1;i++){
+                    if(i != 0){
+                        path = path + this.rutas[i].name + "-";
+                    }
+                }
+                path = path + this.rutas[this.rutas.length-1].name;
+            }
+
+            console.log(path);
+            this.files = event.target.files;
+            console.log(this.files);
+            let url = "http://localhost:3000/";
+            if(path != undefined){
+                url = url + path;
+            }
+
+            var bodyFormData = new FormData();
+            for(let i=0;i<this.files.length;i++){
+                bodyFormData.append('file',this.files[i]);
+            }
+
+            await axios({
+                method: 'post',
+                url: url,
+                data: bodyFormData,
+                headers: {'Content-Type': 'multipart/form-data' }
+            })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (response) {
+                console.log(response);
+            });
+
+            this.getTodos();
+
+        },
+        async crearCarpeta(){
+            if(this.nuevaCarpeta == null || this.nuevaCarpeta == "" || this.nuevaCarpeta == undefined || this.nuevaCarpeta == " "){
+                console.log("Ingresa un nombre");
+                return 0;
+            }
+
+            let path = undefined;
+            let url = "http://localhost:3000/dir/";
+    
+            if(this.rutas.length != 1){
+                path = "";
+                for(let i=0;i<this.rutas.length;i++){
+                    if(i != 0){
+                        path = path + this.rutas[i].name + "-";
+                    }
+                }
+                url = url + path + this.nuevaCarpeta;
+            }else{
+                url = url + this.nuevaCarpeta;
+            }
+
+            await axios({
+                method: 'post',
+                url: url
+            })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (response) {
+                console.log(response);
+            });
+
+            this.getTodos();
+
         }
     }
         

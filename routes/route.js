@@ -257,6 +257,7 @@ router.post('/:path?', async (req,res) =>{
             let dir = splitPath(req.params.path);
             dirPath = path.join(dirPath,dir[0]);
             carpetas = dir[1];
+            ///asafasfa
         }
 
         console.log(carpetas);
@@ -285,31 +286,30 @@ router.post('/:path?', async (req,res) =>{
             try{
                 await file.save();
             }catch(err){
-                return res.status(400).json({
-                    message: 'No se pudo guardar',
-                    success: false,
+                res.status(400).json({
+                    messaje: "Error al guardar los archivos",
+                    status: false,
                     error: err
                 });
             }
             
-
             // Mover el archivo a la carpeta 
             f[i].mv(path.join(dirPath,f[i].name),(err)=>{
                 if (err) {
-                    return res.status(400).json({
-                        message: 'No se pudo guardar',
-                        success: false,
+                    res.status(400).json({
+                        messaje: "Error al subir archivos",
+                        status: false,
                         error: err
-                    });
-                } else {
-                    return res.json({ 
-                        message: 'File received',
-                        success: true,
-                        path: dirPath
                     });
                 }
             });
         }
+
+        return res.json({
+            messaje: "Archivos subidos",
+            status: true
+        });
+        
     }
     
 });
