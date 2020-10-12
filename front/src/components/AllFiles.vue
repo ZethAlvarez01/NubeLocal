@@ -47,11 +47,9 @@
                     <div @click="checkFordward(item.path)">
                         {{item.name}}     
                     </div>
-                    <div @click="getTodos()">
+                    <div @click="buscar()">
                         <DeleteDir :path="path + item.name"/>
-                        {{ rutas }}
                     </div>
-                    
                 </div>
             </div>
         </div>
@@ -75,7 +73,8 @@ export default {
         path: "",
         rutas: [{name: "Home",i:0}],
         nuevaCarpeta: null,
-        filelist: []
+        filelist: [],
+        aux: 0
     }),
     mounted() {
         this.elementos = [];
@@ -257,6 +256,9 @@ export default {
             this.onChange();
             event.currentTarget.classList.add('bg-gray-100');
             event.currentTarget.classList.remove('bg-green-300');
+            },
+            async buscar(){
+                await setTimeout(() => {  this.getTodos(); }, 500);
             }
     }
         
