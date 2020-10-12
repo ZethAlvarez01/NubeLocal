@@ -55,15 +55,20 @@ router.get('/:path?', async (req,res) =>{
                     pathAux = aux2;
                 }
                 console.log(pathAux);
-                const file = await File.find({"path": pathAux,"name":auxName});
-                console.log(file[0].id);
-                let data = {
-                    type: tree.children[i].type,
-                    name: tree.children[i].name,
-                    path: tree.children[i].path,
-                    id: file[0].id
-                };
-                element.push(data);
+                try{
+                    const file = await File.find({"path": pathAux,"name":auxName});
+                    console.log(file[0].id);
+                    let data = {
+                        type: tree.children[i].type,
+                        name: tree.children[i].name,
+                        path: tree.children[i].path,
+                        id: file[0].id
+                    };
+                    element.push(data);
+                }catch(e){
+                    console.log("ErrorWahat "+e);
+                }
+                
             }else{
                 let data = {
                     type: tree.children[i].type,
@@ -176,8 +181,9 @@ router.delete('/file/:id/:path?',async (req,res)=>{
     }
     if (fs.existsSync(dirPath)) {
         const { id } = req.params;
+        let file = null;
         try{
-        const file = await File.findByIdAndDelete(id);
+        file = await File.findByIdAndDelete(id);
         }catch(err){
             return res.status(400).json({
                 message: 'Doesnt exist file',
@@ -186,7 +192,12 @@ router.delete('/file/:id/:path?',async (req,res)=>{
             });
         }
         console.log(file);
-        await unlink(path.join(dirPath,file.name));
+        try{
+            await unlink(path.join(dirPath,file.name));
+        }catch(e){
+            console.log("Error "+e)
+        }
+        
         return res.json({
             message: 'Archivo borrado',
             name: file.name,

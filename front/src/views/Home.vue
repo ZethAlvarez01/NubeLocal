@@ -7,7 +7,7 @@
 
 <script>
 // @ is an alias to /src
-import Files from "@/components/Files.vue";
+import Files from "@/components/AllFiles.vue";
 
 export default {
   name: "Home",
