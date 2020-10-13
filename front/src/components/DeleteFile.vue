@@ -1,5 +1,5 @@
 <template>
-    <div class="Borrar">
+    <div class="deleteFile">
         <p @click="borrar">Borrar</p>
     </div>
 </template>
@@ -27,12 +27,14 @@ export default {
                 path = "http://localhost:3000/file/"+this.id+"/"+this.path;
             }
             console.log(path + "  " + this.id);
+
             await axios({
                 method: 'delete',
                 url: path
             })
-            .then(function (response) {
+            .then((response) =>{
                 console.log(response);
+                setTimeout(() => { this.$emit('getTodos'); }, 500);
             })
             .catch(function (response) {
                 console.log(response);

@@ -39,16 +39,16 @@
             <div v-for="(item, i) in elementos" :key="i">
                 <div v-if="item.type"> 
                     {{item.name}} 
-                    <div @click="getTodos()">
-                        <Delete :id="item.id" :path="path"/>
+                    <div>
+                        <Delete :id="item.id" :path="path" v-on:getTodos="getTodos"/>
                     </div>
                 </div>
                 <div v-else>
                     <div @click="checkFordward(item.path)">
                         {{item.name}}     
                     </div>
-                    <div @click="buscar()">
-                        <DeleteDir :path="path + item.name"/>
+                    <div>
+                        <DeleteDir :path="path + item.name" v-on:getTodos="getTodos"/>
                     </div>
                 </div>
             </div>
@@ -81,8 +81,12 @@ export default {
         this.getTodos();
     },
     methods: {
-        getTodos(){
+         getTodos(){
             this.elementos = [];
+                        
+            let folderA = [];
+            let filesA = [];
+
             axios.get("http://localhost:3000/"+this.path)
             .then(response => {
                 let arreglo = response.data.elements;
@@ -101,8 +105,20 @@ export default {
                     this.elementos.push(elemento);
                 }
                 
+            for(let i=0;i<this.elementos.length;i++){
+                if(this.elementos[i].type == false){
+                    folderA.push(this.elementos[i]);
+                }else{
+                    filesA.push(this.elementos[i]);
+                }
+            }
+
+            this.elementos = folderA.concat(filesA);
+                
             })
             .catch(e => console.log(e));
+
+
             
         },
         checkFordward(path){
@@ -230,6 +246,7 @@ export default {
                 });
 
                 this.getTodos();
+                this.nuevaCarpeta = "";
                 
             },
             onChange() {
@@ -256,9 +273,6 @@ export default {
             this.onChange();
             event.currentTarget.classList.add('bg-gray-100');
             event.currentTarget.classList.remove('bg-green-300');
-            },
-            async buscar(){
-                await setTimeout(() => {  this.getTodos(); }, 500);
             }
     }
         

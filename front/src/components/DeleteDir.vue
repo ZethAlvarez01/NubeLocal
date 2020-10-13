@@ -20,12 +20,15 @@ export default {
                 method: 'delete',
                 url: path
             })
-            .then(function (response) {
+            .then((response) => {
                 console.log(response);
+                setTimeout(() => { this.$emit('getTodos'); }, 500);
             })
             .catch(function (response) {
                 console.log(response);
             });
+            
+            
         }
     }
 }
