@@ -4,12 +4,14 @@
   "description": "Home cloud zeth",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"cd front && npm run serve\" \"npm run start\""
   },
   "author": "Zeth Alvarez Hernandez",
   "license": "ISC",
   "dependencies": {
+    "concurrently": "^5.3.0",
     "cors": "^2.8.5",
     "directory-tree": "^2.2.4",
     "express": "^4.17.1",

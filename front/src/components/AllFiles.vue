@@ -45,10 +45,21 @@
                 </div>
                 <div v-else>
                     <div @click="checkFordward(item.path)">
-                        {{item.name}}     
-                    </div>
-                    <div>
+                            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                width="661px" height="420px" viewBox="0 0 661 420" enable-background="new 0 0 661 420" xml:space="preserve">
+                            <g transform="translate(0.000000,420.000000) scale(0.100000,-0.100000)">
+                                <path d="M40,2112.002V20h3282.998h3282.001l-2.998,1747.002c-1.006,960.996-5,1748.999-7.002,1751.997
+                                    c-2.998,2.002-549.003,7.002-1212.998,8.999l-1207.998,5L3880,3853.999L3585,4176l-720,6.997
+                                    c-396.001,4.004-1193.999,10-1772.002,14.004L40,4202.998V2112.002z M2842.001,4082.998l697.998-5.996l295.996-324.004
+                                    L4132.001,3430h927.002c508.994,0,1043.994-2.998,1188.994-7.002l262.002-5.996V1762.998V110H3320H130v1997.002v1995.996
+                                    l1007.998-5.996C1692.002,4092.998,2458.999,4087.001,2842.001,4082.998z"/>
+                            </g>
+                            <polygon fill="#4E4F5A" points="13,409 13,9.7 354,12.3 413.2,77 651,78.3 651,409 "/>
+                            <path fill="#4E4F5A" d="M-68,183.5"/>
+                            </svg>
                         <DeleteDir :path="path + item.name" v-on:getTodos="getTodos"/>
+                    
+                        {{item.name}}     
                     </div>
                 </div>
             </div>
@@ -279,6 +290,16 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
+    #Capa_1 { 
+        height: 63.53px;
+        width: 100px;
+        cursor: pointer;
+        fill: white;
+    }
+
+    #Capa_1 polygon:hover{
+        fill: #5a84b8;
+    }
 
 </style>

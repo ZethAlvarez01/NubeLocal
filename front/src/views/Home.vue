@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-      <h1>Digital Laboratory</h1>
+      <h1>DM LAB_SYSTEM</h1>
       <Files />
   </div>
 </template>
@@ -18,6 +18,20 @@ export default {
 </script>
 
 <style scoped>
+*{
+  color: white;
+  background: #4e4f5a;
+  font-family: 'Roboto', sans-serif;
+}
 
+.home{
+  width: 100vw;
+  height: 100vh;
+}
+
+h1{
+  display: block;
+  background: #85868b;
+}
 
 </style>
