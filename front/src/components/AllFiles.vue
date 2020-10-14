@@ -1,70 +1,115 @@
 <template>
+
+<div class="main">
+
+<div class="nuevoFile" id="nuevoFile">
+            <div class="cerrarP" @click="hidden()"> 
+                <p class="equisCerrar">X</p>
+            </div>
+            
+            <div class="textNuevoP">
+                <h1 class="label letrasC">Nueva carpeta</h1>
+                <input type="text" class="txtName" v-model="nuevaCarpeta" placeholder="Nueva carpeta">
+                <button v-on:click="crearCarpeta" class="btnCrear">Crear</button>
+
+                <div id="newfileDir">
+
+                    <div @dragover="dragover" @dragleave="dragleave" @drop="drop">
+                        <input v-show="0" type="file" multiple name="fields[assetsFieldHandle][]" id="assetsFieldHandle" 
+                        @change="onChange" ref="file" />
+
+                        <div class="upload">
+                            <label for="assetsFieldHandle">
+                            <div style="margin-bottom: 10px;">
+                                Puedes arrastrar tus archivos o dar
+                                <span style="font-weight: bold;">click aqui</span> para subirlos
+                            </div>
+                            </label>
+                            <ul v-if="this.filelist.length" v-cloak>
+                            <li class="space" v-for="(item,i) in filelist" :key="i">
+                                {{ item.name }}<button type="button" @click="remove(filelist.indexOf(item))" class="removeFile" title="Remove file">x</button>
+                            </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <button @click="submitFiles" class="btnUpload">Subir</button>
+                </div>
+            </div>
+            
+        </div>
+    
+
     <div class="Files">
 
-        <div class="nuevoFile">
-            
-            <h1 class="label">Nueva carpeta</h1>
-            <input type="text" v-model="nuevaCarpeta">
-            <button v-on:click="crearCarpeta">Crear</button>
+        <button id="btnNuevo" @click="mostrar">Nueva</button>
 
-            <div id="newfileDir">
-                <h1 class="label">Nuevo archivo</h1>
-                <div @dragover="dragover" @dragleave="dragleave" @drop="drop">
-                    <input v-show="0" type="file" multiple name="fields[assetsFieldHandle][]" id="assetsFieldHandle" 
-                    @change="onChange" ref="file" />
-                
-                    <label for="assetsFieldHandle">
-                    <div>
-                        Explain to our users they can drop files in here 
-                        or <span>click here</span> to upload their files
-                    </div>
-                    </label>
-                    <ul v-if="this.filelist.length" v-cloak>
-                    <li v-for="(item,i) in filelist" :key="i">
-                        {{ item.name }}<button type="button" @click="remove(filelist.indexOf(item))" title="Remove file">x</button>
-                    </li>
-                    </ul>
-                    <button @click="submitFiles">Subir</button>
+        <div class="navigation">
+            <div class="items" v-for="(item, i) in rutas" :key="i" v-bind:class="(i < rutas.length-1)?'borde_act':'borde_bot'" >
+                <div class="texto" @click="checkBack(item.i)" v-bind:class="(item.name == 'HOME')?'borde_r':''">
+                    {{ item.name }}
+                </div>
+                <div v-if="i != 0" class="cerrar" @click="checkBack(item.i-1)" >
+                    <p class="cerrarP">X</p>
                 </div>
             </div>
-            
         </div>
-
-        <h1>Archivos</h1>
-
-        <div v-for="(item, i) in rutas" :key="i" @click="checkBack(item.i)">
-            <h2>{{ item.name }}</h2>
-        </div>
-        <div class="archivos">
-            <div v-for="(item, i) in elementos" :key="i">
-                <div v-if="item.type"> 
-                    {{item.name}} 
-                    <div>
-                        <Delete :id="item.id" :path="path" v-on:getTodos="getTodos"/>
-                    </div>
-                </div>
-                <div v-else>
-                    <div @click="checkFordward(item.path)">
-                            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                width="661px" height="420px" viewBox="0 0 661 420" enable-background="new 0 0 661 420" xml:space="preserve">
-                            <g transform="translate(0.000000,420.000000) scale(0.100000,-0.100000)">
-                                <path d="M40,2112.002V20h3282.998h3282.001l-2.998,1747.002c-1.006,960.996-5,1748.999-7.002,1751.997
-                                    c-2.998,2.002-549.003,7.002-1212.998,8.999l-1207.998,5L3880,3853.999L3585,4176l-720,6.997
-                                    c-396.001,4.004-1193.999,10-1772.002,14.004L40,4202.998V2112.002z M2842.001,4082.998l697.998-5.996l295.996-324.004
-                                    L4132.001,3430h927.002c508.994,0,1043.994-2.998,1188.994-7.002l262.002-5.996V1762.998V110H3320H130v1997.002v1995.996
-                                    l1007.998-5.996C1692.002,4092.998,2458.999,4087.001,2842.001,4082.998z"/>
+        <div class="body">
+            <div class="archivos">
+                <div v-for="(item, i) in elementos" :key="i">
+                    <div v-if="item.type" class="itemFile"> 
+                        <div class="icon">
+                            <svg class="file" version="1.1" id="Capa_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                width="651px" height="419px" viewBox="0 0 651 419" enable-background="new 0 0 651 419" xml:space="preserve">
+                            <g transform="translate(0.000000,419.000000) scale(0.100000,-0.100000)">
+                                <path d="M28.999,4161L0,4132.001V2095V57.998l28.999-28.994L57.998,0H3255h3197.002l28.994,29.004l29.003,28.994V2095v2037.002
+                                    L6480.996,4161L6452.001,4190H3255H57.998L28.999,4161z M6415,2095V95H3255H95l-2.998,1990C91.001,3180,92.002,4081,95,4087.998
+                                    c2.998,10,641.001,12.002,3162.001,10L6415,4095V2095z"/>
                             </g>
-                            <polygon fill="#4E4F5A" points="13,409 13,9.7 354,12.3 413.2,77 651,78.3 651,409 "/>
-                            <path fill="#4E4F5A" d="M-68,183.5"/>
+                            <polygon fill="#4E4F5A" points="9.5,409.5 9.5,10.2 641.5,9.5 641.5,409.5 "/>
+                            <path fill="#4E4F5A" d="M-116,86"/>
                             </svg>
-                        <DeleteDir :path="path + item.name" v-on:getTodos="getTodos"/>
-                    
-                        {{item.name}}     
+                            <p id="FILE_name" class="noselect">FILE</p>
+                        </div>
+                        <div class="name">
+                            {{item.name}} 
+                        </div>
+
+                        <div class="oculta">
+                            <Delete :id="item.id" :path="path" v-on:getTodos="getTodos"/>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <div class="itemFile">
+                            <div @click="checkFordward(item.path)" class="icon">
+                                <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                    width="661px" height="420px" viewBox="0 0 661 420" enable-background="new 0 0 661 420" xml:space="preserve">
+                                <g transform="translate(0.000000,420.000000) scale(0.100000,-0.100000)">
+                                    <path d="M40,2112.002V20h3282.998h3282.001l-2.998,1747.002c-1.006,960.996-5,1748.999-7.002,1751.997
+                                        c-2.998,2.002-549.003,7.002-1212.998,8.999l-1207.998,5L3880,3853.999L3585,4176l-720,6.997
+                                        c-396.001,4.004-1193.999,10-1772.002,14.004L40,4202.998V2112.002z M2842.001,4082.998l697.998-5.996l295.996-324.004
+                                        L4132.001,3430h927.002c508.994,0,1043.994-2.998,1188.994-7.002l262.002-5.996V1762.998V110H3320H130v1997.002v1995.996
+                                        l1007.998-5.996C1692.002,4092.998,2458.999,4087.001,2842.001,4082.998z"/>
+                                </g>
+                                <polygon fill="#4E4F5A" points="13,409 13,9.7 354,12.3 413.2,77 651,78.3 651,409 "/>
+                                <path fill="#4E4F5A" d="M-68,183.5"/>
+                                </svg>  
+                                <div class="name">
+                                    {{item.name}}   
+                                </div>
+                            </div>
+                            <div class="oculta">
+                                <DeleteDir :path="path + item.name" v-on:getTodos="getTodos"/>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
+</div>
+
+
 </template>
 
 <script>
@@ -82,7 +127,7 @@ export default {
     data:()=>({
         elementos: [],
         path: "",
-        rutas: [{name: "Home",i:0}],
+        rutas: [{name: "HOME",i:0}],
         nuevaCarpeta: null,
         filelist: [],
         aux: 0
@@ -133,7 +178,7 @@ export default {
             
         },
         checkFordward(path){
-            this.rutas = [{name: "Home",i:0}];
+            this.rutas = [{name: "HOME",i:0}];
             let arreglo = path.split("\\");
             //console.log(arreglo);
             let cad = "";
@@ -162,11 +207,11 @@ export default {
         checkBack(ind){
             if(ind == 0){
                 this.path = "";
-                this.rutas = [{name: "Home",i:0}];
+                this.rutas = [{name: "HOME",i:0}];
                 this.getTodos();
             }else{
                 let cad = "";
-                let aux = [{name: "Home",i:0}];
+                let aux = [{name: "HOME",i:0}];
                 for(let i=1;i<=ind;i++){
                     cad = cad + this.rutas[i].name +"-";
                     aux.push(this.rutas[i]);
@@ -284,6 +329,14 @@ export default {
             this.onChange();
             event.currentTarget.classList.add('bg-gray-100');
             event.currentTarget.classList.remove('bg-green-300');
+            },
+            mostrar(){
+                let nuevo =  document.getElementById("nuevoFile");
+                nuevo.classList.add('mostrar');
+            },
+            hidden(){
+                let nuevo =  document.getElementById("nuevoFile");
+                nuevo.classList.remove('mostrar');
             }
     }
         
@@ -291,6 +344,13 @@ export default {
 </script>
 
 <style scoped>
+
+    .Files{
+        display: flex;
+        flex-flow: column;
+        align-items: flex-end;
+    }
+
     #Capa_1 { 
         height: 63.53px;
         width: 100px;
@@ -298,8 +358,286 @@ export default {
         fill: white;
     }
 
-    #Capa_1 polygon:hover{
-        fill: #5a84b8;
+    #Capa_1 polygon {
+        fill: #232429;
     }
 
+    #Capa_2 polygon {
+        fill: #232429;
+    }
+
+    #Capa_1 polygon:hover{
+        fill: #ff71dc;
+        transition: 0.3s;
+    }
+
+    #Capa_2 { 
+        height: 63.53px;
+        width: 100px;
+        cursor: pointer;
+        fill: rgba(255, 255, 255, 0.6);
+    }
+    
+    #Capa_2 polygon:hover{
+        fill: rgba(255, 255, 255, .7);
+        transition: 0.3s;
+    }
+
+    #FILE_name{
+        margin-top: -20px;
+        margin-left: 5px;
+        position: absolute;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 14px;
+    }
+
+    .navigation{
+        width: 97%;
+        min-width: 97vw;
+        background: #232429;
+        margin: 0 auto;
+        display: flex;
+        flex-flow: row;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        margin-top: 30px;
+    }
+
+    .navigation .items{
+        /*display: inline-block;*/
+        text-align: left;
+        border-right: 1px solid rgba(255, 255, 255, 0.5);
+        border-top: 1px solid rgba(255, 255, 255, 0.5);
+        width: 200px;
+        font-size: 14px;
+        justify-content: space-between;
+    }
+
+    .items{
+        display: flex;
+        flex-flow: row;
+        margin-bottom: -1px;
+        z-index: 10;
+    }
+
+    .body{
+        border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        border-left: 1px solid rgba(255, 255, 255, 0.5);
+        border-right: 1px solid rgba(255, 255, 255, 0.5);
+        margin: 0 auto;
+        width: 96.9%;
+        min-width: 96.9vw;
+        min-height: 70vh;
+        margin-top: -1px;
+        z-index: 100;
+    }
+
+    .archivos{
+        box-sizing: border-box;
+        margin: 0 auto;
+        padding: 10px;
+        z-index: -1px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .texto{
+        display: inline;
+        padding: 15px 50% 2px 10px;
+        cursor: pointer;
+    }
+    
+    .cerrar{
+        display: inline;
+        box-sizing: border-box;
+        text-align: center;
+        padding: 15px 0px 2px 0px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .cerrarP{
+        padding: 0px 10px 0px 0px;
+    }
+
+    .borde_bot{
+        border-bottom: 1px solid #232429;
+    }
+
+    .borde_act{
+        border-bottom: none;
+    }
+
+    .oculta{
+        display: none;
+    }
+
+    .borde_r{
+        border-left: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .itemFile{
+        font-size: 14px;
+        display: flex;
+        flex-flow: column;
+        padding: 5px;
+        width: 120px;
+        height: 80px;
+        align-items: center;
+        
+    }
+
+    .name{
+        width: 90px; 
+        overflow: hidden;
+    }
+
+    #btnNuevo{
+        width: 150px;
+        height: 40px;
+        background: #fd42ce;
+        border-radius: 5px;
+        color: white;
+        border: none;
+        margin: 15px;
+        text-transform: uppercase;
+    }
+
+    #btnNuevo:hover{
+        background: #fd42ced0;
+        transition: 0.3s;
+    }
+
+    .main{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .equisCerrar{
+        background: #232429;
+        cursor: pointer;
+        padding: 10px 10px 10px 10px;
+        border-radius: 5px;
+    }
+
+    .nuevoFile{
+        border-radius: 5px;
+        /*#4e4f5a*/
+        background: #232429;
+        position: absolute;
+        z-index: 200;
+        display: none;
+        flex-flow: column;
+        align-items: flex-end;
+        padding: 20px;
+        height: 330px;
+        -webkit-box-shadow: 0px 0px 2px 2px rgba(255,255,255,1);
+        -moz-box-shadow: 0px 0px 2px 2px rgba(255,255,255,1);
+        box-shadow: 0px 0px 2px 2px rgba(255,255,255,1);
+    }
+
+    .upload{
+        box-sizing: border-box;
+        border: 1px solid white;
+        width: 600px;
+        height: 150px;
+        overflow: hidden;
+        border-radius: 5px;
+        font-size: 14px;
+        text-align: center;
+        padding: 25px 20px;
+    }
+
+    .btnUpload{
+        background: #fd42ce;
+        cursor: pointer;
+        padding: 10px 25px 10px 25px;
+        border-radius: 5px;
+        border: none;
+        color: white;
+        margin-top: 20px;
+        text-transform: uppercase;
+    }
+
+    .btnUpload:hover{
+        background: #fd42ced0;
+        transition: 0.3s;
+    }
+
+    #newfileDir{
+        margin-top: 20px;
+    }
+
+    .letrasC{
+        font-size: 25px;
+        font-weight: bold;
+        color: #fd42ce;
+        text-transform: uppercase;
+        margin-top: -20px;
+        margin-bottom: 10px;
+    }
+
+    .btnCrear{
+        background: #fd42ce;
+        cursor: pointer;
+        padding: 5px 25px 5px 25px;
+        border-radius: 5px;
+        border: none;
+        color: white;
+        margin-top: 14px;
+        text-transform: uppercase;
+    }
+
+    .btnCrear:hover{
+        background: #fd42ced0;
+        transition: 0.3s;
+    }
+
+    .txtName{
+        border-radius: 5px;
+        padding: 5px 3px 5px 3px;
+        border: none;
+        margin-right: 10px;
+    }
+
+    ::placeholder {
+    color: rgba(0, 0, 0, 0.3);
+    opacity: 1; /* Firefox */
+    }
+
+    :-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: rgba(0, 0, 0, 0.3);
+    }
+
+    ::-ms-input-placeholder { /* Microsoft Edge */
+        color: rgba(0, 0, 0, 0.3);
+    }
+
+    .removeFile{
+        background: #fd42ce;
+        cursor: pointer;
+        padding: 4px 8px 4px 8px;
+        border-radius: 5px;
+        border: none;
+        color: white;
+        margin-left: 10px;
+        text-transform: uppercase;
+    }
+
+    .removeFile:hover{
+        background: #fd42ced0;
+        transition: 0.3s;
+    }
+
+    .space{
+        margin-top: 5px;
+        font-size: 12px;
+    }
+
+    .mostrar{
+        display: flex;
+    }
+
+    
 </style>

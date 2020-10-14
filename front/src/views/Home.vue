@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-      <h1>DM LAB_SYSTEM</h1>
+      <h1>ZETH DRIVE_01</h1>
       <Files />
   </div>
 </template>
@@ -20,18 +20,24 @@ export default {
 <style scoped>
 *{
   color: white;
-  background: #4e4f5a;
+  background: #232429;
   font-family: 'Roboto', sans-serif;
 }
 
+
 .home{
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
 }
 
 h1{
   display: block;
-  background: #85868b;
+  background: #454650;
+  text-align: center;
+  padding: 1px;
+  font-size: 14px;
 }
+
+
+
 
 </style>

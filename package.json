@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"cd front && npm run serve\" \"npm run start\""
+    "dev": "concurrently \"cd front && npm run serve --fix\" \"npm run start\""
   },
   "author": "Zeth Alvarez Hernandez",
   "license": "ISC",
