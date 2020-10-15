@@ -3,7 +3,7 @@
 <div class="main">
 
 <div class="nuevoFile" id="nuevoFile">
-            <div class="cerrarP" @click="hidden()"> 
+            <div class="cerrarP2" @click="hidden()"> 
                 <p class="equisCerrar">X</p>
             </div>
             
@@ -57,26 +57,32 @@
             <div class="archivos">
                 <div v-for="(item, i) in elementos" :key="i">
                     <div v-if="item.type" class="itemFile"> 
-                        <div class="icon">
-                            <svg class="file" version="1.1" id="Capa_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                width="651px" height="419px" viewBox="0 0 651 419" enable-background="new 0 0 651 419" xml:space="preserve">
-                            <g transform="translate(0.000000,419.000000) scale(0.100000,-0.100000)">
-                                <path d="M28.999,4161L0,4132.001V2095V57.998l28.999-28.994L57.998,0H3255h3197.002l28.994,29.004l29.003,28.994V2095v2037.002
-                                    L6480.996,4161L6452.001,4190H3255H57.998L28.999,4161z M6415,2095V95H3255H95l-2.998,1990C91.001,3180,92.002,4081,95,4087.998
-                                    c2.998,10,641.001,12.002,3162.001,10L6415,4095V2095z"/>
-                            </g>
-                            <polygon fill="#4E4F5A" points="9.5,409.5 9.5,10.2 641.5,9.5 641.5,409.5 "/>
-                            <path fill="#4E4F5A" d="M-116,86"/>
-                            </svg>
-                            <p id="FILE_name" class="noselect">FILE</p>
-                        </div>
+                        
+                            <div class="icon">
+                                <svg class="file" version="1.1" id="Capa_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                    width="651px" height="419px" viewBox="0 0 651 419" enable-background="new 0 0 651 419" xml:space="preserve">
+                                <g transform="translate(0.000000,419.000000) scale(0.100000,-0.100000)">
+                                    <path d="M28.999,4161L0,4132.001V2095V57.998l28.999-28.994L57.998,0H3255h3197.002l28.994,29.004l29.003,28.994V2095v2037.002
+                                        L6480.996,4161L6452.001,4190H3255H57.998L28.999,4161z M6415,2095V95H3255H95l-2.998,1990C91.001,3180,92.002,4081,95,4087.998
+                                        c2.998,10,641.001,12.002,3162.001,10L6415,4095V2095z"/>
+                                </g>
+                                <polygon fill="#4E4F5A" points="9.5,409.5 9.5,10.2 641.5,9.5 641.5,409.5 "/>
+                                <path fill="#4E4F5A" d="M-116,86"/>
+                                </svg>
+                                <p id="FILE_name" class="noselect">FILE</p>
+                            </div>
                         <div class="name">
                             {{item.name}} 
                         </div>
 
                         <div class="oculta">
-                            <Delete :id="item.id" :path="path" v-on:getTodos="getTodos"/>
+                            <Delete class="textoo" :id="item.id" :path="path" v-on:getTodos="getTodos"/>
                         </div>
+
+                        <div class="oculta2">
+                            <a @click="download(item.path)"> Download</a>
+                        </div>
+
                     </div>
                     <div v-else>
                         <div class="itemFile">
@@ -105,7 +111,7 @@
                 </div>
             </div>
         </div>
-
+        <div id="myImage"></div>
     </div>
 </div>
 
@@ -116,6 +122,8 @@
 import axios from 'axios'
 import Delete from "@/components/DeleteFile.vue";
 import DeleteDir from "@/components/DeleteDir.vue";
+
+//const FileDownload = require('js-file-download');
 
 export default {
     name: "Files",
@@ -137,6 +145,38 @@ export default {
         this.getTodos();
     },
     methods: {
+            download(path){
+
+                let path2 = path.split('\\');
+                console.log(path2);
+                let cad = "";
+                for(let i=0;i<path2.length-1;i++){
+                    cad = cad + path2[i] + "-";
+                }
+                cad = cad + path2[path2.length-1];
+
+    let url = "http://localhost:3000/download/"+cad;
+    let method = 'GET';
+
+            axios
+                .request({
+                    url,
+                    method,
+                    responseType: 'blob', //important
+                })
+                .then(({ data }) => {
+                    const downloadUrl = window.URL.createObjectURL(new Blob([data]));
+                    const link = document.createElement('a');
+                    link.href = downloadUrl;
+                    link.setAttribute('download', path2[path2.length-1]); //any other extension
+                    //document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                });
+
+                
+
+            },
          getTodos(){
             this.elementos = [];
                         
@@ -268,6 +308,7 @@ export default {
 
             this.getTodos();
             this.filelist = [];
+            this.hidden();
         },
             async crearCarpeta(){
                 if(this.nuevaCarpeta == null || this.nuevaCarpeta == "" || this.nuevaCarpeta == undefined || this.nuevaCarpeta == " "){
@@ -443,8 +484,9 @@ export default {
 
     .texto{
         display: inline;
-        padding: 15px 50% 2px 10px;
+        padding: 15px 45% 5px 10px;
         cursor: pointer;
+        overflow: hidden;
     }
     
     .cerrar{
@@ -456,10 +498,6 @@ export default {
         font-weight: bold;
     }
 
-    .cerrarP{
-        padding: 0px 10px 0px 0px;
-    }
-
     .borde_bot{
         border-bottom: 1px solid #232429;
     }
@@ -469,7 +507,37 @@ export default {
     }
 
     .oculta{
-        display: none;
+        box-sizing: border-box;
+        background: #232429;
+        display: block;
+        width: 80%;
+        margin: 0 auto;
+        text-align: center;
+        cursor: pointer;
+        margin-top:0px;
+        border-radius: 4px;
+        padding: 5px;
+        }
+
+    .oculta:hover{
+        background: rgba(255, 0, 0, 0.5);
+    }
+
+    .oculta2{
+        box-sizing: border-box;
+        background: #232429;
+        display: block;
+        width: 80%;
+        margin: 0 auto;
+        text-align: center;
+        cursor: pointer;
+        margin-top:5px;
+        border-radius: 4px;
+        padding: 5px;
+        }
+
+    .oculta2:hover{
+        background: rgb(0, 189, 25);
     }
 
     .borde_r{
@@ -482,7 +550,7 @@ export default {
         flex-flow: column;
         padding: 5px;
         width: 120px;
-        height: 80px;
+        height: 150px;
         align-items: center;
         
     }
@@ -490,6 +558,7 @@ export default {
     .name{
         width: 90px; 
         overflow: hidden;
+        padding: 5px;
     }
 
     #btnNuevo{
@@ -515,10 +584,15 @@ export default {
     }
 
     .equisCerrar{
-        background: #232429;
-        cursor: pointer;
+        display: block;
         padding: 10px 10px 10px 10px;
         border-radius: 5px;
+    }
+
+    .cerrarP2{
+        background: #232429;
+        margin: 0px 10px 30px 10px;
+        cursor: pointer;
     }
 
     .nuevoFile{
@@ -532,14 +606,12 @@ export default {
         align-items: flex-end;
         padding: 20px;
         height: 330px;
-        -webkit-box-shadow: 0px 0px 2px 2px rgba(255,255,255,1);
-        -moz-box-shadow: 0px 0px 2px 2px rgba(255,255,255,1);
-        box-shadow: 0px 0px 2px 2px rgba(255,255,255,1);
+        border: 1px solid rgba(255, 255, 255, 0.5);;
     }
 
     .upload{
         box-sizing: border-box;
-        border: 1px solid white;
+        border: 1px solid rgba(255, 255, 255, 0.5);
         width: 600px;
         height: 150px;
         overflow: hidden;
@@ -574,8 +646,9 @@ export default {
         font-weight: bold;
         color: #fd42ce;
         text-transform: uppercase;
-        margin-top: -20px;
+        margin-top: -50px;
         margin-bottom: 10px;
+        width: 50%;
     }
 
     .btnCrear{
@@ -637,6 +710,10 @@ export default {
 
     .mostrar{
         display: flex;
+    }
+
+    .cerrarP{
+        margin-right: 15px;
     }
 
     

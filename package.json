@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"cd front && npm run serve --fix\" \"npm run start\""
+    "dev": "concurrently \"cd front && npm run serve\" \"npm run start \""
   },
   "author": "Zeth Alvarez Hernandez",
   "license": "ISC",
@@ -19,13 +19,15 @@
     "fs": "0.0.1-security",
     "fs-extra": "^9.0.1",
     "fs-file-tree": "^1.1.1",
+    "http-server": "^0.12.3",
     "mongoose": "^5.10.7",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "path": "^0.12.7",
     "rimraf": "^3.0.2",
     "timeago.js": "^4.0.2",
-    "uuid": "^8.3.0"
+    "uuid": "^8.3.0",
+    "vue-axios": "^3.0.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"

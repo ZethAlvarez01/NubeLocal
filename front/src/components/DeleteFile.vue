@@ -1,6 +1,6 @@
 <template>
     <div class="deleteFile">
-        <p @click="borrar">Borrar</p>
+        <p @click="borrar">DELETE</p>
     </div>
 </template>
 

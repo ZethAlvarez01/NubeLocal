@@ -325,4 +325,16 @@ router.post('/:path?', async (req,res) =>{
     
 });
 
+router.get('/download/:path', (req,res)=>{
+    let path2 = req.params.path.split('-');
+                console.log(path2);
+                let cad = "";
+                for(let i=0;i<path2.length-1;i++){
+                    cad = cad + path2[i] + "\\";
+                }
+                cad = cad + path2[path2.length-1];
+
+                res.download(cad);
+});
+
 module.exports = router;
