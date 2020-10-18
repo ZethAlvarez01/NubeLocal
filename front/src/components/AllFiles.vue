@@ -154,8 +154,9 @@ export default {
                     cad = cad + path2[i] + "-";
                 }
                 cad = cad + path2[path2.length-1];
-
-    let url = "http://localhost:3000/download/"+cad;
+                
+    let url = "http://192.168.1.76:3000/download/"+cad;
+    //let url = "http://localhost:3000/download/"+cad;
     let method = 'GET';
 
             axios
@@ -183,7 +184,8 @@ export default {
             let folderA = [];
             let filesA = [];
 
-            axios.get("http://localhost:3000/"+this.path)
+            axios.get("http://192.168.1.76:3000/"+this.path)
+            //axios.get("http://localhost:3000/"+this.path)
             .then(response => {
                 let arreglo = response.data.elements;
                 for(let i=0;i<arreglo.length;i++){
@@ -283,7 +285,8 @@ export default {
             console.log(path);
 
             console.log(this.files);
-            let url = "http://localhost:3000/";
+            let url = "http://192.168.1.76:3000/";
+            //let url = "http://localhost:3000/";
             if(path != undefined){
                 url = url + path;
             }
@@ -317,7 +320,8 @@ export default {
                 }
 
                 let path = undefined;
-                let url = "http://localhost:3000/dir/";
+                let url = "http://192.168.1.76:3000/dir/";
+                //let url = "http://localhost:3000/dir/";
         
                 if(this.rutas.length != 1){
                     path = "";

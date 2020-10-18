@@ -13,8 +13,9 @@ export default {
     },
     methods: {
         async borrar(){
-
-            let path = "http://localhost:3000/dir/"+this.path+"/";
+        
+            let path = "http://192.168.1.76:3000/dir/"+this.path+"/";
+            //let path = "http://localhost:3000/dir/"+this.path+"/";
 
             await axios({
                 method: 'delete',

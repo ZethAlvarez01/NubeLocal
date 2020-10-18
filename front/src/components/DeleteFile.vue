@@ -22,9 +22,11 @@ export default {
         async borrar(){
             let path = undefined;
             if(this.path == ""){
-                path = "http://localhost:3000/file/"+this.id+"/";
+                path = "http://192.168.1.76:3000/file/"+this.id+"/";
+                //path = "http://localhost:3000/file/"+this.id+"/";
             }else{
-                path = "http://localhost:3000/file/"+this.id+"/"+this.path;
+                path = "http://192.168.1.76:3000/file/"+this.id+"/"+this.path;
+                //path = "http://localhost:3000/file/"+this.id+"/"+this.path;
             }
             console.log(path + "  " + this.id);
 
