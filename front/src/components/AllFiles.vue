@@ -111,7 +111,9 @@
                 </div>
             </div>
         </div>
-        <div id="myImage"></div>
+        <div  id="progreso"></div>
+        <progress id="process" value="0" max="100" style="color: red;"></progress>
+                    
     </div>
 </div>
 
@@ -158,12 +160,20 @@ export default {
     let url = "http://192.168.1.76:3000/download/"+cad;
     //let url = "http://localhost:3000/download/"+cad;
     let method = 'GET';
-
+    let process = document.getElementById("process");
+    let div = document.getElementById("progreso");
             axios
                 .request({
                     url,
                     method,
-                    responseType: 'blob', //important
+                    responseType: 'blob', 
+                    onDownloadProgress(e){
+                        let proceso = ((e.loaded * 100) / e.total);
+                        process.setAttribute('value',proceso); 
+                        proceso = parseInt(proceso);
+                        div.innerHTML = "Descarga: "+proceso+"%";
+                    }
+                    
                 })
                 .then(({ data }) => {
                     const downloadUrl = window.URL.createObjectURL(new Blob([data]));
@@ -173,10 +183,11 @@ export default {
                     //document.body.appendChild(link);
                     link.click();
                     link.remove();
+                     process.setAttribute('value', 0);
+                     div.innerHTML = "";
                 });
 
-                
-
+   
             },
          getTodos(){
             this.elementos = [];
@@ -216,7 +227,10 @@ export default {
             })
             .catch(e => console.log(e));
 
-
+            let process = document.getElementById('process');
+            let div = document.getElementById('progreso');
+            div.innerHTML = "";
+            process.setAttribute('value',0);
             
         },
         checkFordward(path){
@@ -295,12 +309,19 @@ export default {
             for(let i=0;i<this.filelist.length;i++){
                 bodyFormData.append('file',this.filelist[i]);
             }
-
+            let process = document.getElementById('process');
+            let div = document.getElementById("progreso");
             await axios({
                 method: 'post',
                 url: url,
                 data: bodyFormData,
-                headers: {'Content-Type': 'multipart/form-data' }
+                headers: {'Content-Type': 'multipart/form-data' },
+                onUploadProgress(e){
+                    let proceso = ((e.loaded * 100) / e.total);
+                    process.setAttribute('value',proceso);
+                    proceso = parseInt(proceso);
+                    div.innerHTML = "Cargando" + proceso+"%";
+                }
             })
             .then(function (response) {
                 console.log(response);
@@ -354,7 +375,7 @@ export default {
                 this.filelist = [...this.$refs.file.files];
             },
             remove(i) {
-            this.filelist.splice(i, 1);
+                this.filelist.splice(i, 1);
             },
             dragover(event) {
             event.preventDefault();
@@ -364,16 +385,16 @@ export default {
             }
             },
             dragleave(event) {
-            // Clean up
-            event.currentTarget.classList.add('bg-gray-100');
-            event.currentTarget.classList.remove('bg-green-300');
+                // Clean up
+                event.currentTarget.classList.add('bg-gray-100');
+                event.currentTarget.classList.remove('bg-green-300');
             },
             drop(event) {
-            event.preventDefault();
-            this.$refs.file.files = event.dataTransfer.files;
-            this.onChange();
-            event.currentTarget.classList.add('bg-gray-100');
-            event.currentTarget.classList.remove('bg-green-300');
+                event.preventDefault();
+                this.$refs.file.files = event.dataTransfer.files;
+                this.onChange();
+                event.currentTarget.classList.add('bg-gray-100');
+                event.currentTarget.classList.remove('bg-green-300');
             },
             mostrar(){
                 let nuevo =  document.getElementById("nuevoFile");
@@ -718,6 +739,12 @@ export default {
 
     .cerrarP{
         margin-right: 15px;
+    }
+
+    #process{
+            margin-top: 5px;
+            height: 15px;
+            background-color: #d700ea;
     }
 
     
